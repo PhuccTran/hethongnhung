@@ -74,36 +74,36 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  HAL_Init(); // khoi tao thu vien hal
 
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
 
   /* Configure the system clock */
-  SystemClock_Config();
+  SystemClock_Config(); //cau hinh xung nhip
 
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_I2C1_Init();
+  MX_GPIO_Init(); // bat xung nhip cho cong gpio
+  MX_I2C1_Init(); // cau hinh bo i2c1 
   /* USER CODE BEGIN 2 */
-  SSD1306_Init(&hi2c1);
-  SSD1306_SetCursor(10,20);
-  SSD1306_SetTextSize(2);
-  SSD1306_WriteString("HELLO");
-  SSD1306_UpdateScreen();
-  int16_t x = 0;
-  HAL_Delay(1000);
-  SSD1306_Fill(SSD1306_COLOR_BLACK);
-  SSD1306_UpdateScreen();
-  HAL_Delay(1000);
-  SSD1306_Fill(SSD1306_COLOR_WHITE);
-  SSD1306_UpdateScreen();
-  HAL_Delay(1000);
+  SSD1306_Init(&hi2c1); // khoi dong man hinh dung bo i2c1
+  SSD1306_SetCursor(10,20); // dat con tro tai vi tri co toa do x = 10, y = 20
+  SSD1306_SetTextSize(2); // chon size chu la 2 
+  SSD1306_WriteString("HELLO"); // in chu hello vao bo dem ram cua mcu
+  SSD1306_UpdateScreen(); // update bo dem len man hinh de hien thi
+  int16_t x = 0; // khoi tao bien dem x= 0
+  HAL_Delay(1000); // delay 1s
+  SSD1306_Fill(SSD1306_COLOR_BLACK); // clear man hinh, to den bo đệm
+  SSD1306_UpdateScreen(); // cap nhat lai man hinh, tat het diem sang
+  HAL_Delay(1000); // delay 1s
+  SSD1306_Fill(SSD1306_COLOR_WHITE); // bat sang toan bo diem anh ( man hinh trang xoa)
+  SSD1306_UpdateScreen(); //cap nhat man hinh 
+  HAL_Delay(1000); //delay 1s
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -112,16 +112,16 @@ int main(void)
   {
     char text[20];
 
-    snprintf(text, sizeof(text), "DEM: %d", x);
-    SSD1306_Fill(SSD1306_COLOR_BLACK);
-    SSD1306_SetCursor(10, 20);
+    snprintf(text, sizeof(text), "DEM: %d", x); // Chuyển giá trị số của biến x thành chuỗi ký tự, ví dụ: "DEM: 0", "DEM: 1",...
+    SSD1306_Fill(SSD1306_COLOR_BLACK); // Xóa bộ đệm cũ để không bị đè nét chữ của lần lặp trước
+    SSD1306_SetCursor(10, 20); // Đặt lại vị trí và cỡ chữ
     SSD1306_SetTextSize(2);
-    SSD1306_WriteString(text);
+    SSD1306_WriteString(text); // Ghi chuỗi vừa định dạng vào bộ đệm và đẩy lên màn hình
     SSD1306_UpdateScreen();
 
-    HAL_Delay(1000);
+    HAL_Delay(1000); // Dừng 1 giây trước khi tăng số
     x++;
-    if (x > 60)
+    if (x > 60) // Nếu đếm vượt quá 60, quay về lại 0
     {
       x = 0;
     }
