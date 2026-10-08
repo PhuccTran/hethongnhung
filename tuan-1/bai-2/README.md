@@ -6,8 +6,12 @@ tu PA7 ve PA0 va lap lai.
 Chuong trinh chi dung thanh ghi RCC va GPIOA, khong dung STD, HAL hay SPL.
 Mac dinh LED active-high.
 
-## Nap qua ST-Link
+## Nạp firmware
+Dùng OpenOCD:
 make flash
+
+Nếu máy bạn đã cài STLink tool và muốn dùng cách cũ:
+make flash-stlink
 
 ## Video Demo
 https://www.youtube.com/shorts/A8BPWwgAhS4
