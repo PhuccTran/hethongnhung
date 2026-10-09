@@ -1,8 +1,4 @@
 # hethongnhung
-# tuan 1
-```
-    dung thanh ghi + make + arm gnu
-```
-# tuan 2
-    dung cubemx gen code setup
-    dung makefile de build va flash
+Tran Thien Phuc B23DCDT194
+Nguyen Thi Nhu Nguyet B23DCDT183
+Hoang Van Kien B23DCDT149
