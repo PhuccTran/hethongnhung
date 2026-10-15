@@ -1,6 +1,6 @@
 # PWM LED và FreeRTOS Queue (STM32F103C8T6)
 
-Chương trình sử dụng STM32F10x Standard Peripheral Library và FreeRTOS, theo cấu trúc dự án `tuan-4`.
+Chương trình sử dụng STM32F10x Standard Peripheral Library và FreeRTOS
 
 ## Kết nối phần cứng
 
