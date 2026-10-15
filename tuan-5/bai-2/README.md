@@ -1,20 +1,23 @@
-# EXTI button counter with FreeRTOS Queue (STM32F103C8T6)
+# Bộ đếm nút nhấn EXTI với Queue của FreeRTOS (STM32F103C8T6)
+Dự án sử dụng thư viện STM32F10x Standard Peripheral Library và FreeRTOS
 
-The project uses STM32F10x Standard Peripheral Library and FreeRTOS. All dependency files are local to this exercise under `vendor/`; it does not modify or rely on earlier weeks.
+## 1. Kết nối phần cứng
 
-## Wiring
+- Nút nhấn: Nối chân PA0 với GND. Chân PA0 sử dụng điện trở kéo lên nội (internal pull-up). Khi nhấn nút, tín hiệu tạo ra một cạnh xuống (falling edge) kích hoạt ngắt EXTI0.
+- Bộ chuyển đổi USB-to-UART: Nối chân PA9 (USART1_TX) với chân RX của bộ chuyển đổi, đồng thời nối GND của bo mạch với GND của bộ chuyển đổi.
+- Cấu hình Serial Terminal: Tốc độ truyền 115200 baud, 8 bit dữ liệu, không có bit chẵn lẻ (no parity), 1 bit dừng (1 stop bit), tức cấu hình 8-N-1.
+- Firmware giả định bo mạch sử dụng thạch anh HSE 8 MHz, giống như trên bo mạch Blue Pill, và cấu hình xung nhịp hệ thống lên 72 MHz.
 
-- Push button: PA0 to GND. PA0 uses its internal pull-up; pressing the button creates a falling edge on EXTI0.
-- USB-to-UART adapter: PA9 (USART1_TX) to adapter RX, and board GND to adapter GND.
-- Serial terminal: 115200 baud, 8 data bits, no parity, 1 stop bit (8-N-1).
-- The firmware assumes an 8 MHz HSE crystal, as on a Blue Pill board, and configures the system clock to 72 MHz.
 
-## Operation
 
-- EXTI0 is configured for a falling edge and runs at NVIC priority 5, which is permitted to call FreeRTOS `...FromISR` APIs with the supplied configuration.
-- Each accepted button edge increments the counter and sends its 32-bit value to a FreeRTOS queue using `xQueueSendFromISR`.
-- A 30 ms ISR tick-based debounce rejects switch bounce. The queue has 10 entries; if an unusually fast burst fills it, the UART task reports a queue-overflow warning.
-- The UART task blocks in `xQueueReceive(..., portMAX_DELAY)`. When a count arrives, it formats and sends `Button count: N` through USART1. `portYIELD_FROM_ISR` requests an immediate context switch when the blocked task is made ready.
+## Nguyên lý hoạt động
+
+-Ngắt EXTI0 được cấu hình kích hoạt ở cạnh xuống (falling edge), với mức ưu tiên NVIC là 5. Mức ưu tiên này cho phép ngắt gọi các API FreeRTOS có hậu tố ...FromISR theo cấu hình được cung cấp.
+- Mỗi khi phát hiện một cạnh nhấn nút hợp lệ, bộ đếm sẽ tăng thêm 1 và gửi giá trị 32 bit của bộ đếm vào hàng đợi (Queue) của FreeRTOS bằng hàm xQueueSendFromISR.
+- Cơ chế chống dội phím (debounce) sử dụng tick của ISR với khoảng thời gian 30 ms để loại bỏ các xung nhiễu do tiếp điểm nút nhấn bị nảy.
+- Hàng đợi có sức chứa 10 phần tử. Nếu có một chuỗi sự kiện đến quá nhanh khiến hàng đợi bị đầy, tác vụ UART sẽ thông báo cảnh báo tràn hàng đợi (queue overflow).
+- Tác vụ UART chờ nhận dữ liệu bằng hàm xQueueReceive(..., portMAX_DELAY). Khi nhận được giá trị bộ đếm, tác vụ định dạng và gửi chuỗi Button count: N qua USART1.
+- Hàm portYIELD_FROM_ISR yêu cầu chuyển đổi ngữ cảnh ngay lập tức nếu tác vụ đang bị chặn được đánh thức và chuyển sang trạng thái sẵn sàng chạy.
 
 ## Build and flash
 
@@ -22,5 +25,3 @@ The project uses STM32F10x Standard Peripheral Library and FreeRTOS. All depende
 make
 make flash PORT=/dev/ttyUSB0 BAUD=115200
 ```
-
-The UART flash command is for the STM32 system bootloader: set BOOT0 high and reset before flashing; set BOOT0 low and reset afterwards. Open the serial terminal after the application starts.
