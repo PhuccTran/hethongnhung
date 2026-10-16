@@ -1,7 +1,6 @@
 #include "gpio_toggle_task.h"
 
 #include "FreeRTOS.h"
-#include "debug.h"
 #include "stm32f10x.h"
 #include "task.h"
 
@@ -24,7 +23,6 @@ void gpio_toggle_task(void *argument)
         (config->pin_number < 1U) || (config->pin_number > 15U) ||
         (config->frequency_hz == 0U))
     {
-        debug_printf("invalid GPIO task config\r\n");
         vTaskDelete(NULL);
         return;
     }
@@ -43,10 +41,6 @@ void gpio_toggle_task(void *argument)
     gpio_init.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_Init(GPIO_TASK_PORT, &gpio_init);
     GPIO_SetBits(GPIO_TASK_PORT, pin_mask);
-
-    debug_printf("GPIO task pin=%u freq=%luHz\r\n",
-                 (unsigned int) config->pin_number,
-                 (unsigned long) config->frequency_hz);
 
     for (;;)
     {
